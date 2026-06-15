@@ -1,0 +1,175 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/paths';
+
+// 2×2 section cards. Each: dominant image (placeholder gradient for now),
+// label + thesis below; hover reveals description via CSS only (no JS).
+const sections = [
+  {
+    href: '/uiux',
+    label: 'UI/UX Redesigns',
+    thesis: 'Why interfaces fail people — and how to fix them.',
+    description:
+      'Rethinking flows, hierarchy, and friction in products people actually use.',
+  },
+  {
+    href: '/products',
+    label: 'Products',
+    thesis: 'Building taught me to ask harder questions about the data underneath.',
+    description:
+      'End-to-end products where design meets shipping constraints and real users.',
+  },
+  {
+    href: '/cv',
+    label: 'Computer Vision',
+    thesis: 'Who gets left out of AI systems?',
+    description:
+      'Research on vision models, fairness, and the gaps between datasets and people.',
+  },
+  {
+    href: '/gis',
+    label: 'GIS + Spatial',
+    thesis: 'How physical space is encoded, surveilled, and misrepresented.',
+    description:
+      'Spatial AI, digital twins, and robotics — systems accountable to place.',
+  },
+];
+
+// JSON-LD: Person (landing page).
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'krval',
+  url: 'https://projects.krval.com',
+  jobTitle: 'Researcher — Spatial AI, Digital Twins & Robotics',
+  knowsAbout: [
+    'UI/UX Design',
+    'Product Design',
+    'Computer Vision',
+    'GIS',
+    'Spatial AI',
+    'Digital Twins',
+    'Robotics',
+  ],
+};
+
+const narrative =
+  "I started by asking why interfaces fail people. That led me to build products — and building products taught me to ask harder questions about the data underneath them. SkinGraph started as a skincare tool and became a study in who gets left out of AI systems. That question pulled me into computer vision research, and CV pulled me into geography: how physical space is encoded, surveilled, and misrepresented. I'm now working at the intersection of spatial AI, digital twins, and robotics — building systems that are accountable to the places and people they model.";
+---
+
+<Layout
+  title="krval — Project Archive"
+  description="A personal archive of work across UI/UX, products, computer vision, and spatial AI."
+  schema={schema}
+>
+  <!-- HERO — narrative arc, verbatim. No JS. -->
+  <section class="hero grid">
+    <div class="hero-inner">
+      <p class="label hero-kicker">Project Archive</p>
+      <h1 class="hero-headline">
+        Systems accountable to the places and people they model.
+      </h1>
+      <p class="hero-narrative">{narrative}</p>
+    </div>
+  </section>
+
+  <!-- 2×2 SECTION CARDS. Hover reveals description (CSS only). -->
+  <section class="sections grid">
+    {
+      sections.map((s) => (
+        <a class="section-card" href={withBase(s.href)}>
+          <div class="section-card-media" aria-hidden="true" />
+          <div class="section-card-text">
+            <p class="label">{s.label}</p>
+            <p class="section-card-thesis">{s.thesis}</p>
+            <p class="section-card-desc">{s.description}</p>
+          </div>
+        </a>
+      ))
+    }
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 8vw, 6rem);
+  }
+  .hero-inner {
+    grid-column: 1 / span 10;
+  }
+  .hero-kicker {
+    margin-bottom: 1rem;
+  }
+  .hero-headline {
+    font-size: var(--fs-hero);
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    max-width: 16ch;
+  }
+  .hero-narrative {
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    line-height: 1.6;
+    max-width: 60ch;
+    color: var(--color-text);
+  }
+
+  .sections {
+    padding-block: clamp(1rem, 4vw, 3rem);
+  }
+  .section-card {
+    grid-column: span 6;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-card);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .section-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+  }
+
+  .section-card-media {
+    aspect-ratio: 16 / 9;
+    /* placeholder dominant image — swap for Astro <Image /> later */
+    background: linear-gradient(135deg, var(--color-line), var(--color-card));
+  }
+
+  .section-card-text {
+    padding: clamp(1rem, 3vw, 1.75rem);
+  }
+  .section-card-thesis {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    margin-block: 0.5rem;
+  }
+
+  /* CSS-only reveal: description collapsed until hover/focus. */
+  .section-card-desc {
+    color: var(--color-muted);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  }
+  .section-card:hover .section-card-desc,
+  .section-card:focus-within .section-card-desc {
+    max-height: 6rem;
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 720px) {
+    .section-card {
+      grid-column: 1 / -1;
+    }
+    /* On touch / small screens, always show the description. */
+    .section-card-desc {
+      max-height: 6rem;
+      opacity: 1;
+      margin-top: 0.5rem;
+    }
+  }
+</style>

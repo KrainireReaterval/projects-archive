@@ -1,0 +1,164 @@
+---
+/**
+ * ProjectCard.astro — horizontal split card used on section pages.
+ *   left:  metadata (name, year, role, tags as pills)
+ *   right: case study prose (problem, what I did/thesis, outcome)
+ * WIP-aware: muted opacity, dashed border, WIPBadge in the top-right corner.
+ */
+import WIPBadge from './WIPBadge.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  year: number;
+  role: string;
+  tags: string[];
+  image: string;
+  thesis: string;
+  problem: string;
+  outcome: string;
+  wip?: boolean;
+}
+
+const {
+  href,
+  title,
+  year,
+  role,
+  tags,
+  image,
+  thesis,
+  problem,
+  outcome,
+  wip = false,
+} = Astro.props;
+---
+
+<article class:list={['card', { wip }]}>
+  {wip && <div class="wip-corner"><WIPBadge /></div>}
+
+  <a class="card-link" href={href} aria-label={`Read case study: ${title}`}>
+    <div class="card-media">
+      <!-- Remote/string image paths use a plain <img> with explicit dims.
+           Swap to Astro <Image /> once images live in src/assets/. -->
+      <img src={image} alt={`${title} — cover`} width="640" height="420" loading="lazy" />
+    </div>
+
+    <div class="card-meta">
+      <h3 class="card-title">{title}</h3>
+      <p class="label card-sub">{year} · {role}</p>
+      <ul class="tags">
+        {tags.map((t) => <li class="pill">{t}</li>)}
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <p class="card-thesis">{thesis}</p>
+      <dl>
+        <dt class="label">Problem</dt>
+        <dd>{problem}</dd>
+        <dt class="label">Outcome</dt>
+        <dd>{outcome}</dd>
+      </dl>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    grid-column: 1 / -1;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: var(--color-card);
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .card.wip {
+    opacity: 0.6;
+    border-style: dashed;
+  }
+  .card.wip:hover {
+    opacity: 0.85;
+  }
+
+  .wip-corner {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+  }
+
+  .card-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .card-media {
+    grid-row: span 2;
+  }
+  .card-media img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  .card-title {
+    font-size: var(--fs-section);
+    margin-bottom: 0.35rem;
+  }
+  .card-sub {
+    margin-bottom: 0.75rem;
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .card-body {
+    grid-column: 2;
+  }
+  .card-thesis {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+  }
+  .card-body dl {
+    margin: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+  .card-body dt {
+    margin-top: 0.5rem;
+  }
+  .card-body dd {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  @media (max-width: 720px) {
+    .card-link {
+      grid-template-columns: 1fr;
+    }
+    .card-media {
+      grid-row: auto;
+    }
+    .card-body {
+      grid-column: 1;
+    }
+  }
+</style>

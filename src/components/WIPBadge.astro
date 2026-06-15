@@ -1,0 +1,22 @@
+---
+/**
+ * WIPBadge.astro — muted pill badge for work-in-progress cards.
+ * Positioned by the parent card (absolute, top-right).
+ */
+---
+
+<span class="wip-badge label" aria-label="Work in progress">WIP</span>
+
+<style>
+  .wip-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border: 1px dashed var(--color-line);
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+</style>

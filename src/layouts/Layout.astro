@@ -1,0 +1,118 @@
+---
+/**
+ * Layout.astro — site shell: <head> SEO block, nav, footer, dark-mode script.
+ *
+ * Dark mode itself is pure CSS (prefers-color-scheme in global.css). The tiny
+ * inline script below only mirrors the preference onto <html data-theme> so
+ * theme-aware embeds (e.g. Giscus) can read it. It is inlined and runs before
+ * paint to avoid a flash; it is the only script on otherwise-static pages.
+ */
+import '../styles/global.css';
+import SEOHead from '../components/SEOHead.astro';
+import SectionNav from '../components/SectionNav.astro';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  showNav?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  canonicalUrl,
+  schema,
+  showNav = true,
+} = Astro.props;
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <SEOHead
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      canonicalUrl={canonicalUrl}
+      schema={schema}
+    />
+
+    <!-- Set data-theme before paint (for theme-aware embeds; no FOUC). -->
+    <script is:inline>
+      (function () {
+        try {
+          var dark = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+          ).matches;
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <header class="site-header grid">
+      <div class="site-header-inner">
+        <a class="brand" href={withBase('/')}>projects.krval.com</a>
+        {showNav && <SectionNav />}
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer grid">
+      <div class="site-footer-inner">
+        <p class="label">© {year} krval — built with Astro on GitHub Pages</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    padding-block: clamp(1rem, 3vw, 1.75rem);
+  }
+  .site-header-inner {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: clamp(0.75rem, 2vw, 1.25rem);
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .site-footer {
+    margin-top: clamp(4rem, 10vw, 8rem);
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+  }
+  .site-footer-inner {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--color-line);
+    padding-top: clamp(1rem, 3vw, 1.5rem);
+  }
+</style>

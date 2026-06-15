@@ -1,0 +1,68 @@
+---
+/**
+ * SectionNav.astro — four section links with active state derived from
+ * the current pathname. No JS.
+ */
+import { withBase } from '../lib/paths';
+
+const sections = [
+  { href: '/uiux', label: 'UI/UX' },
+  { href: '/products', label: 'Products' },
+  { href: '/cv', label: 'Computer Vision' },
+  { href: '/gis', label: 'GIS + Spatial' },
+];
+
+// Normalise current path (strip base + trailing slash) for comparison.
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  current === withBase(href).replace(/\/$/, '');
+---
+
+<nav class="section-nav" aria-label="Sections">
+  <ul>
+    {
+      sections.map((s) => (
+        <li>
+          <a
+            href={withBase(s.href)}
+            class:list={['section-link', { active: isActive(s.href) }]}
+            aria-current={isActive(s.href) ? 'page' : undefined}
+          >
+            {s.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .section-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 2vw, 1.75rem);
+  }
+
+  .section-link {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .section-link:hover {
+    color: var(--color-text);
+  }
+
+  .section-link.active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent);
+  }
+</style>

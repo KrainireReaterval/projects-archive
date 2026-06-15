@@ -1,0 +1,67 @@
+---
+/**
+ * GiscusComments.astro — GitHub Discussions-backed comments, no backend.
+ *
+ * SETUP (one-time, at https://giscus.app after enabling Discussions on the repo):
+ *   1. Pick the repo, choose mapping = "pathname", pick a Discussion category.
+ *   2. Copy the generated data-repo-id and data-category-id into the
+ *      constants below (currently placeholders).
+ *
+ * The script is async + deferred and placed at the bottom of page content, so it
+ * never blocks render and only loads below the fold.
+ */
+interface Props {
+  /** Maps to data-term; defaults to the current pathname. */
+  term?: string;
+  /** 'light' | 'dark' — or a giscus theme name. */
+  theme?: string;
+}
+
+// TODO: replace with real values from https://giscus.app
+const GISCUS_REPO = 'KrainireReaterval/projects.krval.com';
+const GISCUS_REPO_ID = 'REPLACE_WITH_REPO_ID';
+const GISCUS_CATEGORY = 'Announcements';
+const GISCUS_CATEGORY_ID = 'REPLACE_WITH_CATEGORY_ID';
+
+const { term = Astro.url.pathname, theme = 'preferred_color_scheme' } =
+  Astro.props;
+---
+
+<section class="comments" aria-label="Comments">
+  <h2 class="label">Discussion</h2>
+  <div class="giscus"></div>
+  <script
+    src="https://giscus.app/client.js"
+    data-repo={GISCUS_REPO}
+    data-repo-id={GISCUS_REPO_ID}
+    data-category={GISCUS_CATEGORY}
+    data-category-id={GISCUS_CATEGORY_ID}
+    data-mapping="pathname"
+    data-term={term}
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme={theme}
+    data-lang="en"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async></script>
+</section>
+
+<style>
+  .comments {
+    grid-column: 2 / 12;
+    margin-top: clamp(3rem, 8vw, 6rem);
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+    border-top: 1px solid var(--color-line);
+  }
+  @media (max-width: 720px) {
+    .comments {
+      grid-column: 1 / -1;
+    }
+  }
+  .comments h2 {
+    margin-bottom: 1.5rem;
+  }
+</style>

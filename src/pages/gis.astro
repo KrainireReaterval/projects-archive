@@ -1,0 +1,74 @@
+---
+import SectionView from '../components/SectionView.astro';
+import ModelViewer from '../components/ModelViewer.tsx';
+import { withBase } from '../lib/paths';
+
+// GIS + Spatial has a dedicated WIP 3D slot. The real Spline .glb export
+// drops into public/models/ and replaces placeholder.glb below.
+const MODEL_SRC = withBase('/models/placeholder.glb');
+const MODEL_POSTER = withBase('/models/placeholder.webp');
+---
+
+<SectionView
+  section="gis"
+  title="GIS + Spatial"
+  description="Spatial AI, digital twins, and robotics — how physical space is encoded, surveilled, and misrepresented, and how to build systems accountable to place."
+>
+  <!-- model-viewer web component: deferred, ONLY on this page. -->
+  <script
+    slot="head"
+    type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+  ></script>
+
+  <section class="wip-3d grid">
+    <div class="wip-3d-inner">
+      <p class="label">Work in Progress · Interactive 3D</p>
+      <h2 class="wip-3d-title">Spatial scene</h2>
+      <p class="wip-3d-note">
+        Placeholder model — swap <code>public/models/placeholder.glb</code> for the
+        real Spline export when ready.
+      </p>
+      <!-- React island: hydrates only when scrolled into view. -->
+      <ModelViewer
+        client:visible
+        src={MODEL_SRC}
+        poster={MODEL_POSTER}
+        alt="Interactive 3D spatial scene (placeholder)"
+      />
+    </div>
+  </section>
+</SectionView>
+
+<style>
+  .wip-3d {
+    padding-block: clamp(1rem, 3vw, 2rem);
+  }
+  .wip-3d-inner {
+    grid-column: 1 / span 8;
+    border: 1px dashed var(--color-line);
+    border-radius: 10px;
+    padding: clamp(1rem, 3vw, 2rem);
+    opacity: 0.85;
+  }
+  .wip-3d-title {
+    font-size: var(--fs-section);
+    margin-block: 0.35rem 0.75rem;
+  }
+  .wip-3d-note {
+    color: var(--color-muted);
+    margin-bottom: 1.25rem;
+  }
+  .wip-3d-note code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+  @media (max-width: 720px) {
+    .wip-3d-inner {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

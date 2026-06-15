@@ -1,0 +1,183 @@
+/* =========================================================================
+   global.css — custom properties, resets, type scale, grid, light/dark.
+   Fonts: SYSTEM STACKS used as placeholders for now.
+   TODO: when self-hosted woff2 files are dropped in public/fonts/, add the
+   @font-face blocks here and swap the family names in the custom properties
+   below (--font-display / --font-sans / --font-mono).
+   ========================================================================= */
+
+/* ---- Self-hosted font slot (placeholder) -------------------------------
+@font-face {
+  font-family: 'Display Serif';
+  src: url('/fonts/display-serif.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Body Sans';
+  src: url('/fonts/body-sans.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Label Mono';
+  src: url('/fonts/label-mono.woff2') format('woff2');
+  font-weight: 400 600;
+  font-display: swap;
+}
+------------------------------------------------------------------------- */
+
+:root {
+  /* color — light (default) */
+  --color-bg: #f7f6f2;
+  --color-text: #1a1a18;
+  --color-accent: #000000; /* override later */
+  --color-muted: #6b6b66;
+  --color-line: #d9d7d0;
+  --color-card: #fffefb;
+
+  /* type — placeholder system stacks (swap for self-hosted later) */
+  --font-display: ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'Consolas',
+    monospace;
+
+  /* fluid type scale */
+  --fs-hero: clamp(2.5rem, 6vw, 5rem);
+  --fs-section: clamp(1.5rem, 3vw, 2.5rem);
+  --fs-body: 1rem;
+  --fs-label: 0.8125rem;
+
+  /* layout */
+  --maxw: 1280px;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --grid-gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #121211;
+    --color-text: #ebeae6;
+    --color-accent: #ffffff; /* override later */
+    --color-muted: #9a988f;
+    --color-line: #2c2c29;
+    --color-card: #1a1a18;
+  }
+}
+
+/* ---- reset ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* ---- 12-column grid ---------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* utility: span helpers for named placement */
+.col-full {
+  grid-column: 1 / -1;
+}
+
+/* ---- shared label/mono treatment --------------------------------------- */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* ---- pills (tags) ------------------------------------------------------ */
+.pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+/* ---- focus visibility -------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

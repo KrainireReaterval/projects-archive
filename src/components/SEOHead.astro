@@ -1,0 +1,54 @@
+---
+/**
+ * SEOHead.astro — all meta, OpenGraph, canonical, and JSON-LD.
+ * Rendered inside <head> by Layout.astro.
+ */
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  ogImage = '/og-default.png',
+  canonicalUrl,
+  schema,
+} = Astro.props;
+
+// Resolve absolute URLs against the configured `site`.
+const canonical = new URL(canonicalUrl ?? Astro.url.pathname, Astro.site).href;
+const ogImageAbs = new URL(ogImage, Astro.site).href;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!-- OpenGraph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageAbs} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageAbs} />
+
+<!-- JSON-LD -->
+{
+  schema && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(schema)}
+    />
+  )
+}
